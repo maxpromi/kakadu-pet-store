@@ -389,21 +389,28 @@ let footY=-1.2;
 
 // ---------- the neck: head vertices rotate around a pivot at the base of the head ----------
 // Model space of kakadu.glb: Y up, beak points to +Z, the head+crest sit above y≈0.1.
-const neck={ pivot:new THREE.Vector3(0,0.06,0.2), y0:-0.02, y1:0.22, rot:new THREE.Matrix3() };
+// The neck boundary is a TILTED plane: low at the front (just under the beak, above the chest)
+// and higher at the back (nape, above the folded wings), so the whole beak turns as one rigid part.
+const neck={ pivot:new THREE.Vector3(0,0.1,0.22), y0:0.0, y1:0.1, tilt:0.35, rot:new THREE.Matrix3() };
 function addNeck(material){
   material.onBeforeCompile=sh=>{
     sh.uniforms.uHead={value:neck.rot}; sh.uniforms.uPivot={value:neck.pivot};
-    sh.uniforms.uN0={value:neck.y0}; sh.uniforms.uN1={value:neck.y1};
-    sh.vertexShader='uniform mat3 uHead; uniform vec3 uPivot; uniform float uN0; uniform float uN1;\n'+sh.vertexShader
+    sh.uniforms.uN0={value:neck.y0}; sh.uniforms.uN1={value:neck.y1}; sh.uniforms.uTilt={value:neck.tilt};
+    sh.vertexShader='uniform mat3 uHead; uniform vec3 uPivot; uniform float uN0; uniform float uN1; uniform float uTilt;\n'+sh.vertexShader
       .replace('#include <beginnormal_vertex>',`
-        float neckW = smoothstep(uN0, uN1, position.y);
+        float neckW = smoothstep(uN0, uN1, position.y + uTilt*(position.z - 0.3));
         vec3 objectNormal = normalize(mix(vec3(normal), uHead*vec3(normal), neckW));
         #ifdef USE_TANGENT
           vec3 objectTangent = vec3(tangent.xyz);
         #endif`)
       .replace('#include <begin_vertex>',`
         vec3 transformed = vec3(position);
-        transformed = mix(transformed, uHead*(transformed-uPivot)+uPivot, neckW);`);
+        transformed = mix(transformed, uHead*(transformed-uPivot)+uPivot, neckW);
+        vNeckW = neckW;`)
+      .replace('void main() {','varying float vNeckW;\nvoid main() {');
+    sh.uniforms.uDbgW={value:new URLSearchParams(location.search).has('weights')?1:0};
+    sh.fragmentShader='uniform float uDbgW; varying float vNeckW;\n'+sh.fragmentShader
+      .replace('#include <color_fragment>','#include <color_fragment>\n diffuseColor.rgb = mix(diffuseColor.rgb, vec3(1.0,0.1,0.1), vNeckW*uDbgW*0.85);');
   };
   material.needsUpdate=true;
 }
@@ -531,7 +538,11 @@ const baseYaw=-0.3;                         // body turned slightly towards the 
 const head={yaw:0,pitch:0,roll:0}, tgt={yaw:0,pitch:0};
 const mY=new THREE.Matrix4(), mX=new THREE.Matrix4(), mZ=new THREE.Matrix4(), m4=new THREE.Matrix4(), hp=new THREE.Vector3();
 const clock=new THREE.Clock();
+// debug hooks for tuning (?debug in the URL): force head yaw / body spin
+const DBG=new URLSearchParams(location.search).has('debug')?{yaw:null,spin:null}:null;
+if(DBG) window.__kk=DBG;
 renderer.setAnimationLoop(()=>{
+  if(DBG){ if(DBG.spin!=null){spin=DBG.spin;spinVel=0;} }
   const t=clock.getElapsedTime(), now=performance.now();
 
   // body: only the pressed wheel (or a sideways swipe) turns it; it drifts back to face the visitor
@@ -547,10 +558,11 @@ renderer.setAnimationLoop(()=>{
     if(tilt && !mouse.has){ tgt.yaw=tilt.x*0.9; tgt.pitch=tilt.y*0.45; }
     else {
       const dx=(mouse.x-hx)/Math.max(innerWidth*0.35,200), dy=(mouse.y-hy)/Math.max(innerHeight*0.45,200);
-      tgt.yaw=THREE.MathUtils.clamp(dx,-1,1)*1.05 - (baseYaw+spin)*0.9;  // compensate the body so the beak points at the cursor
-      tgt.pitch=THREE.MathUtils.clamp(dy,-1,1)*0.6 - 0.22;           // the beak rests slightly down, so bias upwards
+      tgt.yaw=THREE.MathUtils.clamp(dx,-1,1)*0.95 - (baseYaw+spin)*0.6;  // compensate the body so the beak points at the cursor
+      tgt.pitch=THREE.MathUtils.clamp(dy,-1,1)*0.45 - 0.15;          // the beak rests slightly down, so bias upwards
     }
-    tgt.yaw=THREE.MathUtils.clamp(tgt.yaw,-1.25,1.25);
+    tgt.yaw=THREE.MathUtils.clamp(tgt.yaw,-0.95,0.95);                 // ~55°: beyond that a real neck (and the mesh) would twist
+    if(DBG && DBG.yaw!=null){ tgt.yaw=DBG.yaw; tgt.pitch=0; }
     head.yaw+=(tgt.yaw-head.yaw)*0.12; head.pitch+=(tgt.pitch-head.pitch)*0.12;
     head.roll=Math.sin(t*0.9)*0.08 + head.yaw*-0.12;               // curious head tilt
     const mad=now<angryUntil;
