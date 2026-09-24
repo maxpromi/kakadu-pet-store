@@ -24,7 +24,7 @@
 
   /* NAV */
   nav{position:fixed;inset:16px 0 auto;z-index:20}
-  .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;background:rgba(255,255,255,.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;background:rgba(255,255,255,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
     border:1px solid rgba(0,0,0,.06);border-radius:999px;padding:10px 12px 10px 22px;box-shadow:0 10px 30px rgba(20,20,30,.06)}
   .logo{font-family:Unbounded;font-weight:800;letter-spacing:.02em;font-size:20px;display:flex;align-items:center;gap:10px}
   .logo i{width:26px;height:26px;border-radius:50%;background:conic-gradient(from 200deg,var(--sun),var(--coral),var(--sky),var(--leaf),var(--sun));display:inline-block}
@@ -34,62 +34,52 @@
   .cart b{background:var(--sun);color:var(--ink);border-radius:999px;min-width:22px;height:22px;display:grid;place-items:center;font-size:12px;transition:transform .3s}
   .cart b.bump{transform:scale(1.45)}
 
-  /* HERO */
-  .hero{position:relative;min-height:100vh;display:grid;align-items:center;overflow:hidden;
-    background:radial-gradient(1200px 700px at 70% 40%,#fff6d6 0%,rgba(255,246,214,0) 60%),radial-gradient(900px 600px at 15% 80%,#e3f4ff 0%,rgba(227,244,255,0) 60%),var(--bg)}
+  /* HERO — compact: the offer is visible right away */
+  .hero{position:relative;overflow:hidden;padding:104px 0 34px;
+    background:radial-gradient(900px 600px at 78% 35%,#fff3cc 0%,rgba(255,243,204,0) 60%),radial-gradient(800px 500px at 10% 90%,#e3f4ff 0%,rgba(227,244,255,0) 60%),var(--bg)}
   #stage{position:absolute;inset:0;z-index:1;touch-action:pan-y}
-  .hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1.05fr .95fr;gap:24px;align-items:center;pointer-events:none;padding-top:90px}
-  .hero-copy{pointer-events:auto}
+  .hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:stretch;pointer-events:none}
+  .hero-copy{pointer-events:auto;align-self:center}
   .tag{display:inline-flex;gap:8px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-weight:800;font-size:13px}
   .tag span{width:8px;height:8px;border-radius:50%;background:var(--leaf);box-shadow:0 0 0 4px rgba(47,191,113,.18)}
-  h1{font-family:Unbounded;font-weight:800;font-size:clamp(42px,6.6vw,92px);line-height:.95;letter-spacing:-.02em;margin:22px 0 20px}
+  h1{font-family:Unbounded;font-weight:800;font-size:clamp(38px,5.6vw,80px);line-height:.95;letter-spacing:-.02em;margin:18px 0 16px}
   h1 em{font-style:normal;background:linear-gradient(90deg,var(--sun-deep),var(--coral));-webkit-background-clip:text;background-clip:text;color:transparent}
-  .lead{font-size:clamp(16px,1.5vw,19px);color:var(--muted);max-width:480px;line-height:1.6}
-  .cta{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
-  .btn{border:0;cursor:pointer;font:800 16px Manrope;border-radius:999px;padding:16px 26px;transition:transform .2s,box-shadow .2s;display:inline-block}
+  .lead{font-size:clamp(15px,1.4vw,18px);color:var(--muted);max-width:470px;line-height:1.6}
+  .cta{display:flex;gap:12px;margin-top:24px;flex-wrap:wrap}
+  .btn{border:0;cursor:pointer;font:800 16px Manrope;border-radius:999px;padding:15px 24px;transition:transform .2s,box-shadow .2s;display:inline-block}
   .btn.primary{background:var(--ink);color:#fff;box-shadow:0 12px 30px rgba(21,22,26,.25)}
   .btn.ghost{background:#fff;border:1px solid var(--line)}
   .btn:hover{transform:translateY(-2px)}
-  .stats{display:flex;gap:34px;margin-top:44px}
-  .stats div b{display:block;font-family:Unbounded;font-size:26px}
+  .stats{display:flex;gap:34px;margin-top:28px}
+  .stats div b{display:block;font-family:Unbounded;font-size:24px}
   .stats div{font-size:13px;color:var(--muted);font-weight:700}
-  .hint{position:absolute;z-index:2;bottom:28px;left:50%;transform:translateX(-50%);font-size:13px;font-weight:800;color:var(--muted);white-space:nowrap;
-    display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.75);padding:8px 14px;border-radius:999px;backdrop-filter:blur(8px)}
-  .hint i{width:14px;height:20px;border:2px solid var(--muted);border-radius:8px;position:relative;flex:none}
-  .hint i:after{content:"";position:absolute;width:4px;height:6px;border-radius:2px;background:var(--coral);left:3px;top:3px;animation:wheel 1.4s infinite}
+  /* the bird lives in this box (right square); the 3D canvas behind the hero is aligned to it */
+  .slot{position:relative;min-height:440px}
+  .hint{position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);font-size:12px;font-weight:800;color:var(--muted);width:max-content;max-width:100%;text-align:center;line-height:1.35;
+    display:flex;gap:8px;align-items:center;background:rgba(255,255,255,.8);padding:7px 12px;border-radius:999px;backdrop-filter:blur(8px)}
+  .hint i{width:13px;height:19px;border:2px solid var(--muted);border-radius:8px;position:relative;flex:none}
+  .hint i:after{content:"";position:absolute;width:3px;height:5px;border-radius:2px;background:var(--coral);left:3px;top:3px;animation:wheel 1.4s infinite}
   @keyframes wheel{0%{transform:translateY(0);opacity:1}100%{transform:translateY(6px);opacity:0}}
-  .bubble{position:absolute;z-index:3;right:12%;top:22%;background:#fff;border-radius:18px 18px 18px 4px;padding:12px 16px;font-weight:800;
-    box-shadow:0 14px 40px rgba(0,0,0,.08);opacity:0;transform:translateY(10px) scale(.9);transition:.3s;pointer-events:none;font-size:15px;max-width:260px}
+  .bubble{position:absolute;right:2%;top:6%;background:#fff;border-radius:18px 18px 18px 4px;padding:11px 15px;font-weight:800;
+    box-shadow:0 14px 40px rgba(0,0,0,.08);opacity:0;transform:translateY(10px) scale(.9);transition:.3s;font-size:15px;max-width:240px}
   .bubble.show{opacity:1;transform:none}
   .bubble.mad{background:var(--coral);color:#fff}
-  .loader{position:absolute;z-index:2;right:22%;top:50%;transform:translate(50%,-50%);font-weight:800;color:var(--muted);font-size:14px}
+  .loader{position:absolute;inset:0;display:grid;place-items:center;font-weight:800;color:var(--muted);font-size:14px}
 
   /* MARQUEE */
-  .marquee{background:var(--ink);color:#fff;overflow:hidden;padding:18px 0;white-space:nowrap}
-  .marquee .track{display:inline-flex;gap:48px;animation:mq 30s linear infinite;font-family:Unbounded;font-weight:700;font-size:18px}
+  .marquee{background:var(--ink);color:#fff;overflow:hidden;padding:16px 0;white-space:nowrap;position:relative;z-index:3}
+  .marquee .track{display:inline-flex;gap:48px;animation:mq 30s linear infinite;font-family:Unbounded;font-weight:700;font-size:17px}
   .marquee span{display:inline-flex;align-items:center;gap:48px}
   .marquee span:after{content:"✦";color:var(--sun)}
   @keyframes mq{to{transform:translateX(-50%)}}
 
   /* SECTIONS */
-  section{padding:110px 0}
+  section{padding:90px 0}
   .kicker{font-weight:800;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--coral)}
-  h2{font-family:Unbounded;font-weight:700;font-size:clamp(30px,4vw,52px);letter-spacing:-.02em;margin:12px 0 40px;max-width:760px;line-height:1.05}
-
-  /* SHOP BY PET */
-  .pets{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
-  .pet{position:relative;border-radius:26px;overflow:hidden;aspect-ratio:3/4;color:#fff;cursor:pointer;background:#ddd}
-  .pet img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
-  .pet:hover img{transform:scale(1.07)}
-  .pet:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 45%,rgba(0,0,0,.6))}
-  .pet>div{position:absolute;left:20px;right:20px;bottom:18px;z-index:1;display:flex;justify-content:space-between;align-items:end}
-  .pet h3{font-family:Unbounded;font-size:26px}
-  .pet small{display:block;opacity:.85;font-weight:700;font-size:13px}
-  .pet b{width:44px;height:44px;border-radius:50%;background:#fff;color:var(--ink);display:grid;place-items:center;font-size:20px;transition:transform .3s}
-  .pet:hover b{transform:rotate(-45deg)}
+  h2{font-family:Unbounded;font-weight:700;font-size:clamp(28px,3.6vw,48px);letter-spacing:-.02em;margin:12px 0 34px;max-width:760px;line-height:1.05}
 
   /* PRODUCTS */
-  .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:34px}
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
   .filters button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:10px 18px;font:800 14px Manrope;cursor:pointer;transition:.2s}
   .filters button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
   .products{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
@@ -111,9 +101,21 @@
   .add:hover{background:var(--sun-deep)}
   .add:active{transform:scale(.95)}
 
+  /* SHOP BY PET */
+  .pets{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .pet{position:relative;border-radius:26px;overflow:hidden;aspect-ratio:3/4;color:#fff;cursor:pointer;background:#ddd}
+  .pet img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+  .pet:hover img{transform:scale(1.07)}
+  .pet:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 45%,rgba(0,0,0,.6))}
+  .pet>div{position:absolute;left:20px;right:20px;bottom:18px;z-index:1;display:flex;justify-content:space-between;align-items:end}
+  .pet h3{font-family:Unbounded;font-size:26px}
+  .pet small{display:block;opacity:.85;font-weight:700;font-size:13px}
+  .pet b{width:44px;height:44px;border-radius:50%;background:#fff;color:var(--ink);display:grid;place-items:center;font-size:20px;transition:transform .3s}
+  .pet:hover b{transform:rotate(-45deg)}
+
   /* PROMO */
   .promo{display:grid;grid-template-columns:1.1fr .9fr;gap:20px}
-  .bigcard{border-radius:28px;background:var(--ink);color:#fff;padding:44px;position:relative;overflow:hidden;min-height:380px;display:flex;flex-direction:column;justify-content:flex-end}
+  .bigcard{border-radius:28px;background:var(--ink);color:#fff;padding:44px;position:relative;overflow:hidden;min-height:360px;display:flex;flex-direction:column;justify-content:flex-end}
   .bigcard h3{font-family:Unbounded;font-size:clamp(28px,3vw,40px);line-height:1.05;margin-bottom:14px;position:relative}
   .bigcard p{opacity:.72;line-height:1.6;position:relative;max-width:420px}
   .bigcard .ring{position:absolute;border-radius:50%;border:2px dashed rgba(255,210,63,.5);animation:spin 26s linear infinite}
@@ -137,11 +139,9 @@
   .score b{font-family:Unbounded;font-size:56px}
   .score span{color:var(--muted);font-weight:700}
 
-  /* BRANDS */
   .brands{overflow:hidden;border-block:1px solid var(--line);padding:26px 0;white-space:nowrap}
   .brands .track{display:inline-flex;gap:70px;animation:mq 40s linear infinite reverse;font-family:Unbounded;font-weight:800;font-size:24px;color:#b9b2a6}
 
-  /* FAQ */
   .faq{display:grid;grid-template-columns:.8fr 1.2fr;gap:40px}
   details{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px 22px;margin-bottom:12px}
   summary{font-weight:800;font-size:17px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:16px}
@@ -165,24 +165,23 @@
   .reveal{opacity:0;transform:translateY(30px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.8,.2,1)}
   .reveal.in{opacity:1;transform:none}
 
-  @media (max-width:1000px){ .products{grid-template-columns:repeat(3,1fr)} }
-  @media (max-width:900px){
-    .links{display:none}
-    .hero-inner{grid-template-columns:1fr;padding-top:110px;align-content:start}
-    .hero{min-height:auto;display:flex;flex-direction:column}
-    #stage{position:relative;order:2;height:460px;margin-top:-10px}
-    .hint{position:relative;order:3;left:auto;bottom:auto;transform:none;align-self:center;margin:0 16px 30px;white-space:normal;text-align:center}
-    .stats{gap:22px}
+  @media (max-width:1000px){ .products{grid-template-columns:repeat(3,1fr)} .links{display:none} }
+  @media (max-width:760px){
+    .hero-inner{grid-template-columns:1.15fr .85fr;gap:8px}
+    .stats{gap:18px}
+    .stats div b{font-size:19px}
+    .slot{min-height:360px}
+    .hint{justify-content:center}
     .pets{grid-template-columns:repeat(2,1fr)}
     .products{grid-template-columns:repeat(2,1fr)}
     .promo,.news,.faq{grid-template-columns:1fr}
     .reviews{grid-template-columns:1fr}
     .news{padding:32px}
     .fgrid{grid-template-columns:1fr 1fr}
-    .bubble{right:8%;top:auto;bottom:400px}
-    .loader{right:50%;top:auto;bottom:220px}
   }
   @media (max-width:560px){
+    .hero-inner{grid-template-columns:1fr}
+    .slot{min-height:340px;order:-1;margin-top:-10px}
     .pets{gap:12px}
     .pet h3{font-size:20px}
     .pet b{width:34px;height:34px;font-size:16px}
@@ -190,8 +189,7 @@
     .prod{padding:10px}
     .prod h4{font-size:14px}
     .price{font-size:15px}
-    .stats div b{font-size:20px}
-    section{padding:80px 0}
+    section{padding:70px 0}
   }
 </style>
 </head>
@@ -199,14 +197,12 @@
 
 <nav><div class="wrap nav">
   <a class="logo" href="#"><i></i>KAKADU</a>
-  <div class="links"><a href="#pets">Pets</a><a href="#shop">Shop</a><a href="#reviews">Reviews</a><a href="#faq">FAQ</a></div>
+  <div class="links"><a href="#shop">Shop</a><a href="#pets">Pets</a><a href="#reviews">Reviews</a><a href="#faq">FAQ</a></div>
   <button class="cart" id="cartBtn">Cart <b id="cartN">0</b></button>
 </div></nav>
 
-<header class="hero">
+<header class="hero" id="hero">
   <div id="stage"></div>
-  <div class="loader" id="loader">Loading the bird…</div>
-  <div class="bubble" id="bubble">Hello! 👋</div>
   <div class="wrap hero-inner">
     <div class="hero-copy">
       <div class="tag"><span></span>Free delivery across Israel from ₪199</div>
@@ -222,8 +218,12 @@
         <div><b>4.9★</b>rating</div>
       </div>
     </div>
+    <div class="slot" id="slot">
+      <div class="loader" id="loader">Loading the bird…</div>
+      <div class="bubble" id="bubble">Hello! 👋</div>
+      <div class="hint"><i></i><span id="hintText">He watches your cursor · click him · hold the mouse wheel to spin</span></div>
+    </div>
   </div>
-  <div class="hint" id="hint"><i></i><span>Kakadu follows your cursor · hold the mouse wheel (or drag) to spin him · click to annoy him</span></div>
 </header>
 
 <div class="marquee"><div class="track">
@@ -231,7 +231,16 @@
   <span>Free delivery from ₪199</span><span>Vet-approved products</span><span>30-day easy returns</span><span>WhatsApp support 7 days a week</span><span>Eco packaging</span>
 </div></div>
 
-<section id="pets"><div class="wrap">
+<section id="shop" style="padding-top:56px"><div class="wrap">
+  <div class="kicker">Bestsellers</div>
+  <h2>Kakadu-approved picks.</h2>
+  <div class="filters" id="filters">
+    <button class="on" data-f="all">All</button><button data-f="birds">Birds</button><button data-f="cats">Cats</button><button data-f="dogs">Dogs</button><button data-f="fish">Fish</button><button data-f="care">Care</button>
+  </div>
+  <div class="products" id="products"></div>
+</div></section>
+
+<section id="pets" style="padding-top:10px"><div class="wrap">
   <div class="kicker reveal">Shop by pet</div>
   <h2 class="reveal">Who are we shopping for today?</h2>
   <div class="pets">
@@ -240,15 +249,6 @@
     <a class="pet reveal" data-f="dogs" href="#shop"><img src="img/l8.jpg" alt="Dogs" loading="lazy"><div><div><h3>Dogs</h3><small>560 products</small></div><b>→</b></div></a>
     <a class="pet reveal" data-f="fish" href="#shop"><img src="img/l9.jpg" alt="Fish" loading="lazy"><div><div><h3>Fish</h3><small>150 products</small></div><b>→</b></div></a>
   </div>
-</div></section>
-
-<section id="shop" style="padding-top:10px"><div class="wrap">
-  <div class="kicker reveal">Bestsellers</div>
-  <h2 class="reveal">Kakadu-approved picks.</h2>
-  <div class="filters reveal" id="filters">
-    <button class="on" data-f="all">All</button><button data-f="birds">Birds</button><button data-f="cats">Cats</button><button data-f="dogs">Dogs</button><button data-f="fish">Fish</button><button data-f="care">Care</button>
-  </div>
-  <div class="products" id="products"></div>
 </div></section>
 
 <section style="padding-top:10px"><div class="wrap promo">
@@ -328,7 +328,7 @@
     {n:'Pure Flow Fountain',s:'Care · ceramic',p:159,c:'care',r:4.9}
   ];
   const wrap=document.getElementById('products');
-  wrap.innerHTML=P.map((x,i)=>`<div class="prod reveal" data-c="${x.c}"><div class="pimg">${x.b?`<span class="badge">${x.b}</span>`:''}<button class="fav" aria-label="Save">♡</button><img src="img/p${i}.jpg" alt="${x.n}" loading="lazy"></div>
+  wrap.innerHTML=P.map((x,i)=>`<div class="prod" data-c="${x.c}"><div class="pimg">${x.b?`<span class="badge">${x.b}</span>`:''}<button class="fav" aria-label="Save">♡</button><img src="img/p${i}.jpg" alt="${x.n}" ${i>3?'loading="lazy"':''}></div>
     <div class="prow"><div><h4>${x.n}</h4><small>${x.s}</small><div class="stars">★ ${x.r.toFixed(1)}</div></div><div class="price">₪${x.p}${x.o?`<s>₪${x.o}</s>`:''}</div></div>
     <button class="add">Add to cart</button></div>`).join('');
   let n=0; const cn=document.getElementById('cartN');
@@ -340,11 +340,10 @@
   });
   const fl=document.getElementById('filters');
   function setFilter(f){ fl.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.f===f));
-    wrap.querySelectorAll('.prod').forEach(p=>{p.classList.toggle('hide',f!=='all'&&p.dataset.c!==f); p.classList.add('in');}); }
+    wrap.querySelectorAll('.prod').forEach(p=>p.classList.toggle('hide',f!=='all'&&p.dataset.c!==f)); }
   fl.addEventListener('click',e=>{const b=e.target.closest('button'); if(b) setFilter(b.dataset.f);});
   document.querySelectorAll('.pet').forEach(p=>p.addEventListener('click',()=>setFilter(p.dataset.f)));
   document.getElementById('code').addEventListener('click',e=>{navigator.clipboard&&navigator.clipboard.writeText('FLOCK15').catch(()=>{}); e.currentTarget.innerHTML='Copied! ✓';});
-  // reveal on scroll, with a safety net so nothing in view stays hidden
   const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08,rootMargin:'0px 0px -40px 0px'});
   document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(i%4)*70+'ms';io.observe(el)});
   function sweep(){document.querySelectorAll('.reveal:not(.in)').forEach(el=>{const r=el.getBoundingClientRect(); if(r.top<innerHeight&&r.bottom>0) el.classList.add('in');});}
@@ -359,7 +358,7 @@ import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
 
-const stage=document.getElementById('stage');
+const hero=document.getElementById('hero'), stage=document.getElementById('stage'), slot=document.getElementById('slot');
 const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));
 renderer.outputColorSpace=THREE.SRGBColorSpace;
@@ -369,63 +368,94 @@ stage.appendChild(renderer.domElement);
 
 const scene=new THREE.Scene();
 scene.environment=new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(),0.04).texture;
-const camera=new THREE.PerspectiveCamera(32,1,0.1,100);
-camera.position.set(0,0.15,6);
+const camera=new THREE.PerspectiveCamera(30,1,0.1,100);
+camera.position.set(0,0,8);
 const key=new THREE.DirectionalLight(0xfff3dc,2.2); key.position.set(3,4,5); scene.add(key);
 const rim=new THREE.DirectionalLight(0xbfe3ff,1.6); rim.position.set(-4,2,-3); scene.add(rim);
 scene.add(new THREE.HemisphereLight(0xffffff,0xf1e4cf,0.7));
 
-// soft contact shadow
+// soft contact shadow under the perch
 const sc=document.createElement('canvas'); sc.width=sc.height=128;
 const sg=sc.getContext('2d'); const gr=sg.createRadialGradient(64,64,0,64,64,64);
-gr.addColorStop(0,'rgba(60,40,10,.55)'); gr.addColorStop(.55,'rgba(60,40,10,.18)'); gr.addColorStop(1,'rgba(60,40,10,0)');
+gr.addColorStop(0,'rgba(60,40,10,.5)'); gr.addColorStop(.55,'rgba(60,40,10,.16)'); gr.addColorStop(1,'rgba(60,40,10,0)');
 sg.fillStyle=gr; sg.fillRect(0,0,128,128);
-const shadow=new THREE.Mesh(new THREE.PlaneGeometry(2.2,0.9),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(sc),transparent:true,opacity:.5,depthWrite:false}));
+const shadow=new THREE.Mesh(new THREE.PlaneGeometry(2.4,0.8),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(sc),transparent:true,opacity:.5,depthWrite:false}));
 shadow.rotation.x=-Math.PI/2; scene.add(shadow);
+
+const rig=new THREE.Group(); scene.add(rig);   // whole bird + perch: turns only with the pressed mouse wheel
+const bob=new THREE.Group(); rig.add(bob);     // breathing, hop, shake
+const BIRD_H=2.4;                               // normalised model height (perch to crest)
 let footY=-1.2;
 
-const rig=new THREE.Group(); scene.add(rig);   // follows cursor / spins
-const bob=new THREE.Group(); rig.add(bob);     // idle, hop, shake
-
-let mobile=false;
-function layout(){
-  const w=stage.clientWidth,h=stage.clientHeight;
-  renderer.setSize(w,h); camera.aspect=w/h; camera.updateProjectionMatrix();
-  mobile=w<900;
-  const halfW=Math.tan(THREE.MathUtils.degToRad(camera.fov/2))*camera.position.z*camera.aspect;
-  rig.position.set(mobile?0:halfW*0.42, mobile?0.05:-0.05, 0);
-  rig.scale.setScalar(mobile?0.95:1);
-  document.querySelector('#hint span').textContent = mobile
-    ? 'Swipe sideways on Kakadu to spin him · tap to annoy him'
-    : 'Kakadu follows your cursor · hold the mouse wheel (or drag) to spin him · click to annoy him';
-  shadow.position.set(rig.position.x, rig.position.y+(footY-0.25)*rig.scale.x, 0);
-  shadow.scale.setScalar(rig.scale.x);
+// ---------- the neck: head vertices rotate around a pivot at the base of the head ----------
+// Model space of kakadu.glb: Y up, beak points to +Z, the head+crest sit above y≈0.1.
+const neck={ pivot:new THREE.Vector3(0,0.06,0.2), y0:-0.02, y1:0.22, rot:new THREE.Matrix3() };
+function addNeck(material){
+  material.onBeforeCompile=sh=>{
+    sh.uniforms.uHead={value:neck.rot}; sh.uniforms.uPivot={value:neck.pivot};
+    sh.uniforms.uN0={value:neck.y0}; sh.uniforms.uN1={value:neck.y1};
+    sh.vertexShader='uniform mat3 uHead; uniform vec3 uPivot; uniform float uN0; uniform float uN1;\n'+sh.vertexShader
+      .replace('#include <beginnormal_vertex>',`
+        float neckW = smoothstep(uN0, uN1, position.y);
+        vec3 objectNormal = normalize(mix(vec3(normal), uHead*vec3(normal), neckW));
+        #ifdef USE_TANGENT
+          vec3 objectTangent = vec3(tangent.xyz);
+        #endif`)
+      .replace('#include <begin_vertex>',`
+        vec3 transformed = vec3(position);
+        transformed = mix(transformed, uHead*(transformed-uPivot)+uPivot, neckW);`);
+  };
+  material.needsUpdate=true;
 }
-addEventListener('resize',layout); layout();
 
-const loader=new GLTFLoader();
 function prep(g,height){
   const m=g.scene;
   const box=new THREE.Box3().setFromObject(m); const size=box.getSize(new THREE.Vector3()); const c=box.getCenter(new THREE.Vector3());
   const s=height/size.y; m.scale.setScalar(s); m.position.sub(c.multiplyScalar(s));
   return m;
 }
-let calm=null, angry=null;
+let calm=null, angry=null, headAnchor=new THREE.Object3D();
+const loader=new GLTFLoader();
 loader.load('kakadu.glb',g=>{
-  calm=prep(g,2.4); bob.add(calm);
-  footY=new THREE.Box3().setFromObject(calm).min.y; layout();
+  g.scene.traverse(o=>{ if(o.isMesh){ addNeck(o.material); o.add(headAnchor); headAnchor.position.set(0,0.45,0.35); } });
+  calm=prep(g,BIRD_H); bob.add(calm);
+  footY=new THREE.Box3().setFromObject(calm).min.y;
   document.getElementById('loader').remove();
+  layout();
   setTimeout(()=>say('Hello! 👋'),600);
-  // a second scan of the same bird in an angry pose: wings out, beak open
   loader.load('kakadu_angry.glb',a=>{
-    angry=prep(a,2.55);
+    angry=prep(a,BIRD_H*0.97);
     angry.position.y+=footY-new THREE.Box3().setFromObject(angry).min.y;
     angry.visible=false; bob.add(angry);
   },undefined,()=>{});
 },undefined,()=>{document.getElementById('loader').textContent='3D model not found';});
 
+// ---------- place the bird exactly inside the right "slot" box ----------
+const plane=new THREE.Plane(new THREE.Vector3(0,0,1),0), tmp=new THREE.Vector3();
+function screenToWorld(px,py,W,H){
+  const r=new THREE.Raycaster(); r.setFromCamera(new THREE.Vector2(px/W*2-1,-(py/H)*2+1),camera);
+  return r.ray.intersectPlane(plane,tmp.clone());
+}
+function layout(){
+  const W=hero.clientWidth, H=hero.clientHeight;
+  renderer.setSize(W,H); camera.aspect=W/H; camera.updateProjectionMatrix();
+  const hr=hero.getBoundingClientRect(), sr=slot.getBoundingClientRect();
+  const top=screenToWorld(sr.left-hr.left+sr.width/2, sr.top-hr.top+sr.height*0.02, W,H);
+  const bot=screenToWorld(sr.left-hr.left+sr.width/2, sr.top-hr.top+sr.height*0.9, W,H);
+  const s=Math.min((top.y-bot.y)/BIRD_H, (sr.width*0.95/W)*(2*Math.tan(THREE.MathUtils.degToRad(camera.fov/2))*camera.position.z*camera.aspect)/1.9);
+  rig.scale.setScalar(s);
+  rig.position.set(top.x, (top.y+bot.y)/2, 0);
+  shadow.position.set(rig.position.x, rig.position.y+(footY-0.1)*s, 0);
+  shadow.scale.setScalar(s);
+  document.getElementById('hintText').textContent = matchMedia('(hover:none)').matches
+    ? 'He watches you · tap him · swipe sideways to spin'
+    : 'He watches your cursor · click him · hold the mouse wheel to spin';
+}
+addEventListener('resize',layout); layout();
+if(document.fonts) document.fonts.ready.then(layout);
+
 // ---------- input ----------
-const target={x:0,y:0}, cur={x:0,y:0};
+const mouse={x:innerWidth*0.3,y:innerHeight*0.3,has:false};
 const ray=new THREE.Raycaster(), ndc=new THREE.Vector2();
 function hitBird(e){
   if(!calm) return false;
@@ -434,28 +464,29 @@ function hitBird(e){
   ray.setFromCamera(ndc,camera);
   return ray.intersectObject(bob,true).length>0;
 }
-let spin=0, spinVel=0, drag=null, moved=0, dragBtn=0, touchY=0, touchLocked=false;
+let spin=0, spinVel=0, drag=null, dragKind='', moved=0, touchY=0, touchLocked=false;
 addEventListener('pointermove',e=>{
-  if(e.pointerType==='mouse'){ target.x=(e.clientX/innerWidth)*2-1; target.y=(e.clientY/innerHeight)*2-1; }
+  mouse.x=e.clientX; mouse.y=e.clientY; mouse.has=true;
   if(drag!==null){
-    if(e.pointerType==='touch' && !touchLocked){
-      // decide once: a sideways swipe spins the bird, a vertical swipe scrolls the page
+    if(dragKind==='touch' && !touchLocked){
       if(Math.abs(e.clientY-touchY)>Math.abs(e.clientX-drag)+4){ drag=null; return; }
       if(Math.abs(e.clientX-drag)>6) touchLocked=true; else return;
     }
-    const dx=e.clientX-drag; drag=e.clientX; moved+=Math.abs(dx); spinVel=dx*0.012; spin+=dx*0.012;
+    const dx=e.clientX-drag; drag=e.clientX; moved+=Math.abs(dx);
+    if(dragKind!=='click'){ spinVel=dx*0.012; spin+=dx*0.012; }
   }
-  if(e.pointerType==='mouse') renderer.domElement.style.cursor = drag!==null ? 'grabbing' : (hitBird(e) ? 'pointer' : 'default');
+  if(e.pointerType==='mouse') renderer.domElement.style.cursor = dragKind==='wheel'&&drag!==null ? 'grabbing' : (hitBird(e) ? 'pointer' : 'default');
 });
 renderer.domElement.addEventListener('pointerdown',e=>{
-  // pressed mouse wheel spins from anywhere on the stage; left button / touch must start on the bird
-  if(e.button===1){ e.preventDefault(); drag=e.clientX; dragBtn=1; moved=99; return; }
-  if(e.button===0 && hitBird(e)){ drag=e.clientX; touchY=e.clientY; dragBtn=0; moved=0; touchLocked=false; }
+  if(e.button===1){ e.preventDefault(); drag=e.clientX; dragKind='wheel'; moved=99; return; }        // pressed wheel = spin
+  if(e.button===0 && hitBird(e)){ drag=e.clientX; touchY=e.clientY; moved=0; touchLocked=false; dragKind = e.pointerType==='touch'?'touch':'click'; }
 });
-renderer.domElement.addEventListener('mousedown',e=>{ if(e.button===1) e.preventDefault(); }); // no browser auto-scroll
-addEventListener('pointerup',()=>{ if(drag!==null && dragBtn===0 && moved<6) annoy(); drag=null; });
-addEventListener('pointercancel',()=>{ drag=null; });
-addEventListener('deviceorientation',e=>{if(e.gamma==null)return; target.x=THREE.MathUtils.clamp(e.gamma/30,-1,1); target.y=THREE.MathUtils.clamp((e.beta-45)/30,-1,1);});
+renderer.domElement.addEventListener('mousedown',e=>{ if(e.button===1) e.preventDefault(); });   // no browser auto-scroll
+renderer.domElement.addEventListener('auxclick',e=>{ if(e.button===1) e.preventDefault(); });
+addEventListener('pointerup',()=>{ if(drag!==null && dragKind!=='wheel' && moved<8) annoy(); drag=null; dragKind=''; });
+addEventListener('pointercancel',()=>{ drag=null; dragKind=''; });
+let tilt=null;
+addEventListener('deviceorientation',e=>{ if(e.gamma!=null) tilt={x:THREE.MathUtils.clamp(e.gamma/35,-1,1), y:THREE.MathUtils.clamp((e.beta-45)/35,-1,1)}; });
 
 // ---------- voice: a synthesized cockatoo screech ----------
 let actx=null;
@@ -496,17 +527,40 @@ function annoy(){
 }
 
 // ---------- loop ----------
-const baseYaw=-0.35;
+const baseYaw=-0.3;                         // body turned slightly towards the headline
+const head={yaw:0,pitch:0,roll:0}, tgt={yaw:0,pitch:0};
+const mY=new THREE.Matrix4(), mX=new THREE.Matrix4(), mZ=new THREE.Matrix4(), m4=new THREE.Matrix4(), hp=new THREE.Vector3();
 const clock=new THREE.Clock();
 renderer.setAnimationLoop(()=>{
   const t=clock.getElapsedTime(), now=performance.now();
-  const halfW=Math.tan(THREE.MathUtils.degToRad(camera.fov/2))*camera.position.z*camera.aspect;
-  cur.x+=((target.x-rig.position.x/halfW)-cur.x)*0.08; cur.y+=(target.y-cur.y)*0.08;
+
+  // body: only the pressed wheel (or a sideways swipe) turns it; it drifts back to face the visitor
   if(drag===null){ spin+=spinVel; spinVel*=0.93; }
-  if(drag===null && Math.abs(spinVel)<0.002){ spin=Math.atan2(Math.sin(spin),Math.cos(spin))*0.96; }
-  rig.rotation.y=baseYaw+spin+THREE.MathUtils.clamp(cur.x,-1.2,1.2)*0.75;
-  rig.rotation.x=THREE.MathUtils.clamp(cur.y,-1,1)*0.18;
-  rig.rotation.z=-THREE.MathUtils.clamp(cur.x,-1,1)*0.05;
+  if(drag===null && Math.abs(spinVel)<0.002){ spin=Math.atan2(Math.sin(spin),Math.cos(spin))*0.97; }
+  rig.rotation.y=baseYaw+spin;
+
+  // head: look at the cursor (screen-space offset from the head, converted to yaw/pitch)
+  if(calm){
+    headAnchor.getWorldPosition(hp); hp.project(camera);
+    const hr=hero.getBoundingClientRect();
+    const hx=hr.left+(hp.x+1)/2*hr.width, hy=hr.top+(1-hp.y)/2*hr.height;
+    if(tilt && !mouse.has){ tgt.yaw=tilt.x*0.9; tgt.pitch=tilt.y*0.45; }
+    else {
+      const dx=(mouse.x-hx)/Math.max(innerWidth*0.35,200), dy=(mouse.y-hy)/Math.max(innerHeight*0.45,200);
+      tgt.yaw=THREE.MathUtils.clamp(dx,-1,1)*1.05 - (baseYaw+spin)*0.9;  // compensate the body so the beak points at the cursor
+      tgt.pitch=THREE.MathUtils.clamp(dy,-1,1)*0.6 - 0.22;           // the beak rests slightly down, so bias upwards
+    }
+    tgt.yaw=THREE.MathUtils.clamp(tgt.yaw,-1.25,1.25);
+    head.yaw+=(tgt.yaw-head.yaw)*0.12; head.pitch+=(tgt.pitch-head.pitch)*0.12;
+    head.roll=Math.sin(t*0.9)*0.08 + head.yaw*-0.12;               // curious head tilt
+    const mad=now<angryUntil;
+    const jolt=mad?Math.sin(t*38)*0.12*(0.3+rage):0;
+    mY.makeRotationY(head.yaw+jolt); mX.makeRotationX(head.pitch - (mad?0.15:0)); mZ.makeRotationZ(head.roll);
+    m4.multiplyMatrices(mY,mX).multiply(mZ);
+    neck.rot.setFromMatrix4(m4);
+  }
+
+  // angry pose swap + shake
   const mad=now<angryUntil;
   if(calm) calm.visible=!(mad&&angry);
   if(angry) angry.visible=mad;
@@ -515,8 +569,8 @@ renderer.setAnimationLoop(()=>{
   bob.rotation.z=shake; bob.position.x=shake*0.6;
   hop=Math.max(0,hop-0.028);
   const h=Math.sin(hop*Math.PI)*0.35+(mad?Math.sin(Math.min(1,rage*1.6)*Math.PI)*0.08:0);
-  const puff=mad?1.06:1;
-  bob.position.y=Math.sin(t*1.6)*0.03+h;
+  const puff=mad?1.05:1;
+  bob.position.y=Math.sin(t*1.6)*0.025+h;
   bob.scale.set(puff*(1+Math.sin(t*1.6)*0.006),puff*(1-Math.sin(t*1.6)*0.006+h*0.05),puff);
   shadow.material.opacity=.5-h*.6;
   renderer.render(scene,camera);
