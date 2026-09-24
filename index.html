@@ -440,13 +440,13 @@ const key=new THREE.DirectionalLight(0xfff3dc,2.2); key.position.set(3,4,5); sce
 const rim=new THREE.DirectionalLight(0xbfe3ff,1.6); rim.position.set(-4,2,-3); scene.add(rim);
 scene.add(new THREE.HemisphereLight(0xffffff,0xf1e4cf,0.7));
 
-// soft contact shadow under the perch
+// (no floor shadow: the flat plane was seen edge-on and showed up as a stripe behind the bird)
 const sc=document.createElement('canvas'); sc.width=sc.height=128;
 const sg=sc.getContext('2d'); const gr=sg.createRadialGradient(64,64,0,64,64,64);
 gr.addColorStop(0,'rgba(60,40,10,.5)'); gr.addColorStop(.55,'rgba(60,40,10,.16)'); gr.addColorStop(1,'rgba(60,40,10,0)');
 sg.fillStyle=gr; sg.fillRect(0,0,128,128);
 const shadow=new THREE.Mesh(new THREE.PlaneGeometry(2.4,0.8),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(sc),transparent:true,opacity:.5,depthWrite:false}));
-shadow.rotation.x=-Math.PI/2; scene.add(shadow);
+shadow.rotation.x=-Math.PI/2;   // kept for layout maths, not added to the scene
 
 const rig=new THREE.Group(); scene.add(rig);   // whole bird + perch: turns only with the pressed mouse wheel
 const bob=new THREE.Group(); rig.add(bob);     // breathing, hop, shake
@@ -545,6 +545,7 @@ function screenToWorld(px,py,W,H){
 }
 function layout(){
   const W=hero.clientWidth, H=hero.clientHeight;
+  if(!W || !H) return;                               // hidden/background tab: measure later, never divide by zero
   renderer.setSize(W,H); camera.aspect=W/H; camera.updateProjectionMatrix();
   const hr=hero.getBoundingClientRect(), sr=slot.getBoundingClientRect();
   const top=screenToWorld(sr.left-hr.left+sr.width/2, sr.top-hr.top+sr.height*0.07, W,H);
@@ -559,6 +560,8 @@ function layout(){
     : 'He watches your cursor · click him · hold the mouse wheel to spin';
 }
 addEventListener('resize',layout); layout();
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) layout(); });
+new ResizeObserver(layout).observe(hero);
 if(document.fonts) document.fonts.ready.then(layout);
 
 // ---------- input ----------
@@ -668,14 +671,18 @@ renderer.setAnimationLoop(()=>{
     const hx=hr.left+(hp.x+1)/2*hr.width, hy=hr.top+(1-hp.y)/2*hr.height;
     if(tilt && !mouse.has){ tgt.yaw=tilt.x*0.9; tgt.pitch=tilt.y*0.45; }
     else {
-      const dx=(mouse.x-hx)/Math.max(innerWidth*0.35,200), dy=(mouse.y-hy)/Math.max(innerHeight*0.45,200);
+      const dx=(mouse.x-hx)/Math.max(innerWidth*0.2,120), dy=(mouse.y-hy)/Math.max(innerHeight*0.28,120);
       tgt.yaw=THREE.MathUtils.clamp(dx,-1,1)*0.95 - (baseYaw+spin)*0.6;  // compensate the body so the beak points at the cursor
       tgt.pitch=THREE.MathUtils.clamp(dy,-1,1)*0.45 - 0.15;          // the beak rests slightly down, so bias upwards
     }
     tgt.yaw=THREE.MathUtils.clamp(tgt.yaw,-0.95,0.95);                 // ~55°: beyond that a real neck (and the mesh) would twist
     if(DBG && DBG.yaw!=null){ tgt.yaw=DBG.yaw; tgt.pitch=0; }
-    head.yaw+=(tgt.yaw-head.yaw)*0.12; head.pitch+=(tgt.pitch-head.pitch)*0.12;
-    head.roll=Math.sin(t*0.9)*0.08 + head.yaw*-0.12;               // curious head tilt
+    // snappy: the head catches the cursor within a few frames; fast moves add a jerky tilt
+    if(!Number.isFinite(tgt.yaw)) tgt.yaw=0; if(!Number.isFinite(tgt.pitch)) tgt.pitch=0;
+    if(!Number.isFinite(head.yaw)){ head.yaw=0; head.pitch=0; head.vel=0; }   // self-heal if a bad frame ever slips through
+    const pyaw=head.yaw; head.yaw+=(tgt.yaw-head.yaw)*0.42; head.pitch+=(tgt.pitch-head.pitch)*0.42;
+    head.vel=THREE.MathUtils.lerp(head.vel||0,(head.yaw-pyaw)*6,0.5);
+    head.roll=Math.sin(t*0.9)*0.06 + head.yaw*-0.12 - THREE.MathUtils.clamp(head.vel,-0.5,0.5);   // curious tilt + whip on fast moves
     const mad=now<angryUntil;
     const jolt=mad?Math.sin(t*38)*0.12*(0.3+rage):0;
     const nod=Math.sin(hop*Math.PI*3)*0.28*hop;                       // happy nods instead of jumping
