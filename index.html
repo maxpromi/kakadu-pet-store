@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KAKADU — Pet Store</title>
+<meta name="description" content="KAKADU — premium food, toys and care for birds and pets. Concept website with an interactive 3D cockatoo by Max Prom AI Studio.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E🦜%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fbf7f1; --ink:#15161a; --muted:#6b6f7a; --line:#e9e2d6;
+    --sun:#ffd23f; --sun-deep:#f4b400; --leaf:#2fbf71; --sky:#7cc6fe; --coral:#ff7a59;
+    --card:#ffffff; --radius:22px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:Manrope,system-ui,sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+  .wrap{width:min(1200px,100% - 32px);margin-inline:auto}
+
+  /* NAV */
+  nav{position:fixed;inset:16px 0 auto;z-index:20}
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;background:rgba(255,255,255,.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border:1px solid rgba(0,0,0,.06);border-radius:999px;padding:10px 12px 10px 22px;box-shadow:0 10px 30px rgba(20,20,30,.06)}
+  .logo{font-family:Unbounded;font-weight:800;letter-spacing:.02em;font-size:20px;display:flex;align-items:center;gap:10px}
+  .logo i{width:26px;height:26px;border-radius:50%;background:conic-gradient(from 200deg,var(--sun),var(--coral),var(--sky),var(--leaf),var(--sun));display:inline-block}
+  .links{display:flex;gap:26px;font-weight:700;font-size:15px;color:#3b3e46}
+  .links a:hover{color:var(--ink)}
+  .cart{display:flex;align-items:center;gap:8px;background:var(--ink);color:#fff;border-radius:999px;padding:10px 16px;font-weight:800;font-size:14px;cursor:pointer;border:0}
+  .cart b{background:var(--sun);color:var(--ink);border-radius:999px;min-width:22px;height:22px;display:grid;place-items:center;font-size:12px;transition:transform .3s}
+  .cart b.bump{transform:scale(1.45)}
+
+  /* HERO */
+  .hero{position:relative;min-height:100vh;display:grid;align-items:center;overflow:hidden;
+    background:radial-gradient(1200px 700px at 70% 40%,#fff6d6 0%,rgba(255,246,214,0) 60%),radial-gradient(900px 600px at 15% 80%,#e3f4ff 0%,rgba(227,244,255,0) 60%),var(--bg)}
+  #stage{position:absolute;inset:0;z-index:1;touch-action:pan-y}
+  .hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1.05fr .95fr;gap:24px;align-items:center;pointer-events:none;padding-top:90px}
+  .hero-copy{pointer-events:auto}
+  .tag{display:inline-flex;gap:8px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-weight:800;font-size:13px}
+  .tag span{width:8px;height:8px;border-radius:50%;background:var(--leaf);box-shadow:0 0 0 4px rgba(47,191,113,.18)}
+  h1{font-family:Unbounded;font-weight:800;font-size:clamp(42px,6.6vw,92px);line-height:.95;letter-spacing:-.02em;margin:22px 0 20px}
+  h1 em{font-style:normal;background:linear-gradient(90deg,var(--sun-deep),var(--coral));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{font-size:clamp(16px,1.5vw,19px);color:var(--muted);max-width:480px;line-height:1.6}
+  .cta{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
+  .btn{border:0;cursor:pointer;font:800 16px Manrope;border-radius:999px;padding:16px 26px;transition:transform .2s,box-shadow .2s;display:inline-block}
+  .btn.primary{background:var(--ink);color:#fff;box-shadow:0 12px 30px rgba(21,22,26,.25)}
+  .btn.ghost{background:#fff;border:1px solid var(--line)}
+  .btn:hover{transform:translateY(-2px)}
+  .stats{display:flex;gap:34px;margin-top:44px}
+  .stats div b{display:block;font-family:Unbounded;font-size:26px}
+  .stats div{font-size:13px;color:var(--muted);font-weight:700}
+  .hint{position:absolute;z-index:2;bottom:28px;left:50%;transform:translateX(-50%);font-size:13px;font-weight:800;color:var(--muted);white-space:nowrap;
+    display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.75);padding:8px 14px;border-radius:999px;backdrop-filter:blur(8px)}
+  .hint i{width:14px;height:20px;border:2px solid var(--muted);border-radius:8px;position:relative;flex:none}
+  .hint i:after{content:"";position:absolute;width:4px;height:6px;border-radius:2px;background:var(--coral);left:3px;top:3px;animation:wheel 1.4s infinite}
+  @keyframes wheel{0%{transform:translateY(0);opacity:1}100%{transform:translateY(6px);opacity:0}}
+  .bubble{position:absolute;z-index:3;right:12%;top:22%;background:#fff;border-radius:18px 18px 18px 4px;padding:12px 16px;font-weight:800;
+    box-shadow:0 14px 40px rgba(0,0,0,.08);opacity:0;transform:translateY(10px) scale(.9);transition:.3s;pointer-events:none;font-size:15px;max-width:260px}
+  .bubble.show{opacity:1;transform:none}
+  .bubble.mad{background:var(--coral);color:#fff}
+  .loader{position:absolute;z-index:2;right:22%;top:50%;transform:translate(50%,-50%);font-weight:800;color:var(--muted);font-size:14px}
+
+  /* MARQUEE */
+  .marquee{background:var(--ink);color:#fff;overflow:hidden;padding:18px 0;white-space:nowrap}
+  .marquee .track{display:inline-flex;gap:48px;animation:mq 30s linear infinite;font-family:Unbounded;font-weight:700;font-size:18px}
+  .marquee span{display:inline-flex;align-items:center;gap:48px}
+  .marquee span:after{content:"✦";color:var(--sun)}
+  @keyframes mq{to{transform:translateX(-50%)}}
+
+  /* SECTIONS */
+  section{padding:110px 0}
+  .kicker{font-weight:800;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--coral)}
+  h2{font-family:Unbounded;font-weight:700;font-size:clamp(30px,4vw,52px);letter-spacing:-.02em;margin:12px 0 40px;max-width:760px;line-height:1.05}
+
+  /* SHOP BY PET */
+  .pets{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .pet{position:relative;border-radius:26px;overflow:hidden;aspect-ratio:3/4;color:#fff;cursor:pointer;background:#ddd}
+  .pet img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+  .pet:hover img{transform:scale(1.07)}
+  .pet:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 45%,rgba(0,0,0,.6))}
+  .pet>div{position:absolute;left:20px;right:20px;bottom:18px;z-index:1;display:flex;justify-content:space-between;align-items:end}
+  .pet h3{font-family:Unbounded;font-size:26px}
+  .pet small{display:block;opacity:.85;font-weight:700;font-size:13px}
+  .pet b{width:44px;height:44px;border-radius:50%;background:#fff;color:var(--ink);display:grid;place-items:center;font-size:20px;transition:transform .3s}
+  .pet:hover b{transform:rotate(-45deg)}
+
+  /* PRODUCTS */
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:34px}
+  .filters button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:10px 18px;font:800 14px Manrope;cursor:pointer;transition:.2s}
+  .filters button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .products{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .prod{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;display:flex;flex-direction:column;gap:12px;transition:box-shadow .3s,transform .3s}
+  .prod.hide{display:none}
+  .prod:hover{box-shadow:0 20px 50px rgba(20,20,30,.08);transform:translateY(-4px)}
+  .pimg{aspect-ratio:4/3;border-radius:16px;position:relative;overflow:hidden;background:#f3eee6}
+  .pimg img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+  .prod:hover .pimg img{transform:scale(1.06)}
+  .badge{position:absolute;z-index:1;top:10px;left:10px;background:var(--ink);color:#fff;font-size:12px;font-weight:800;border-radius:999px;padding:6px 10px}
+  .fav{position:absolute;z-index:1;top:8px;right:8px;width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.9);cursor:pointer;font-size:16px}
+  .prow{display:flex;justify-content:space-between;align-items:start;gap:8px}
+  .prod h4{font-size:16px;font-weight:800;line-height:1.25}
+  .prod small{color:var(--muted);font-weight:700;font-size:13px}
+  .stars{color:var(--sun-deep);font-size:13px;font-weight:800}
+  .price{font-family:Unbounded;font-size:18px;white-space:nowrap;text-align:right}
+  .price s{font-family:Manrope;font-size:13px;color:var(--muted);font-weight:700;display:block}
+  .add{border:0;background:var(--sun);font:800 14px Manrope;border-radius:999px;padding:11px 16px;cursor:pointer;transition:transform .15s,background .2s;margin-top:auto}
+  .add:hover{background:var(--sun-deep)}
+  .add:active{transform:scale(.95)}
+
+  /* PROMO */
+  .promo{display:grid;grid-template-columns:1.1fr .9fr;gap:20px}
+  .bigcard{border-radius:28px;background:var(--ink);color:#fff;padding:44px;position:relative;overflow:hidden;min-height:380px;display:flex;flex-direction:column;justify-content:flex-end}
+  .bigcard h3{font-family:Unbounded;font-size:clamp(28px,3vw,40px);line-height:1.05;margin-bottom:14px;position:relative}
+  .bigcard p{opacity:.72;line-height:1.6;position:relative;max-width:420px}
+  .bigcard .ring{position:absolute;border-radius:50%;border:2px dashed rgba(255,210,63,.5);animation:spin 26s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .code{margin-top:22px;display:inline-flex;gap:12px;align-items:center;background:var(--sun);color:var(--ink);border-radius:14px;padding:12px 16px;width:max-content;position:relative;cursor:pointer;border:0;font:800 16px Manrope}
+  .feat{display:grid;gap:14px;align-content:center}
+  .f{display:flex;gap:16px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px}
+  .f i{flex:none;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-style:normal;font-weight:800;font-family:Unbounded}
+  .f h5{font-size:17px;margin-bottom:4px}
+  .f p{font-size:14px;color:var(--muted);line-height:1.5}
+
+  /* REVIEWS */
+  .reviews{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .rev{background:#fff;border:1px solid var(--line);border-radius:22px;padding:26px;display:flex;flex-direction:column;gap:18px}
+  .rev p{font-size:16px;line-height:1.6;font-weight:600}
+  .who{display:flex;gap:12px;align-items:center;margin-top:auto}
+  .who i{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:800;font-family:Unbounded;font-size:15px}
+  .who b{display:block}
+  .who small{color:var(--muted);font-weight:700}
+  .score{display:flex;gap:26px;align-items:center;margin-bottom:34px;flex-wrap:wrap}
+  .score b{font-family:Unbounded;font-size:56px}
+  .score span{color:var(--muted);font-weight:700}
+
+  /* BRANDS */
+  .brands{overflow:hidden;border-block:1px solid var(--line);padding:26px 0;white-space:nowrap}
+  .brands .track{display:inline-flex;gap:70px;animation:mq 40s linear infinite reverse;font-family:Unbounded;font-weight:800;font-size:24px;color:#b9b2a6}
+
+  /* FAQ */
+  .faq{display:grid;grid-template-columns:.8fr 1.2fr;gap:40px}
+  details{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px 22px;margin-bottom:12px}
+  summary{font-weight:800;font-size:17px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:16px}
+  summary::-webkit-details-marker{display:none}
+  summary:after{content:"+";font-family:Unbounded;transition:transform .3s}
+  details[open] summary:after{transform:rotate(45deg)}
+  details p{margin-top:12px;color:var(--muted);line-height:1.6}
+
+  .news{background:linear-gradient(120deg,#fff1bf,#ffe1d8 50%,#dff3ff);border-radius:32px;padding:56px;display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center}
+  .news form{display:flex;gap:10px;background:#fff;border-radius:999px;padding:8px;border:1px solid var(--line)}
+  .news input{flex:1;border:0;outline:0;font:700 16px Manrope;padding:0 14px;background:transparent;min-width:0}
+
+  footer{background:var(--ink);color:#c9c9cf;padding:70px 0 30px;margin-top:40px}
+  .fgrid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:30px}
+  footer h6{color:#fff;font-size:14px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}
+  footer ul{list-style:none;display:grid;gap:10px;font-weight:600}
+  footer .logo{color:#fff;margin-bottom:14px}
+  .fbot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;border-top:1px solid #2c2d33;margin-top:50px;padding-top:24px;font-size:14px}
+  .fbot a{color:var(--sun);font-weight:800}
+
+  .reveal{opacity:0;transform:translateY(30px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.8,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  @media (max-width:1000px){ .products{grid-template-columns:repeat(3,1fr)} }
+  @media (max-width:900px){
+    .links{display:none}
+    .hero-inner{grid-template-columns:1fr;padding-top:110px;align-content:start}
+    .hero{min-height:auto;display:flex;flex-direction:column}
+    #stage{position:relative;order:2;height:460px;margin-top:-10px}
+    .hint{position:relative;order:3;left:auto;bottom:auto;transform:none;align-self:center;margin:0 16px 30px;white-space:normal;text-align:center}
+    .stats{gap:22px}
+    .pets{grid-template-columns:repeat(2,1fr)}
+    .products{grid-template-columns:repeat(2,1fr)}
+    .promo,.news,.faq{grid-template-columns:1fr}
+    .reviews{grid-template-columns:1fr}
+    .news{padding:32px}
+    .fgrid{grid-template-columns:1fr 1fr}
+    .bubble{right:8%;top:auto;bottom:400px}
+    .loader{right:50%;top:auto;bottom:220px}
+  }
+  @media (max-width:560px){
+    .pets{gap:12px}
+    .pet h3{font-size:20px}
+    .pet b{width:34px;height:34px;font-size:16px}
+    .products{gap:12px}
+    .prod{padding:10px}
+    .prod h4{font-size:14px}
+    .price{font-size:15px}
+    .stats div b{font-size:20px}
+    section{padding:80px 0}
+  }
+</style>
+</head>
+<body>
+
+<nav><div class="wrap nav">
+  <a class="logo" href="#"><i></i>KAKADU</a>
+  <div class="links"><a href="#pets">Pets</a><a href="#shop">Shop</a><a href="#reviews">Reviews</a><a href="#faq">FAQ</a></div>
+  <button class="cart" id="cartBtn">Cart <b id="cartN">0</b></button>
+</div></nav>
+
+<header class="hero">
+  <div id="stage"></div>
+  <div class="loader" id="loader">Loading the bird…</div>
+  <div class="bubble" id="bubble">Hello! 👋</div>
+  <div class="wrap hero-inner">
+    <div class="hero-copy">
+      <div class="tag"><span></span>Free delivery across Israel from ₪199</div>
+      <h1>Happy birds.<br><em>Happy home.</em></h1>
+      <p class="lead">Premium food, smart toys and everyday care for parrots, cats, dogs and everyone who shares your sofa. Picked by vets, loved by Kakadu.</p>
+      <div class="cta">
+        <a class="btn primary" href="#shop">Shop bestsellers</a>
+        <a class="btn ghost" href="#pets">Shop by pet</a>
+      </div>
+      <div class="stats">
+        <div><b>12k+</b>happy pets</div>
+        <div><b>48h</b>delivery</div>
+        <div><b>4.9★</b>rating</div>
+      </div>
+    </div>
+  </div>
+  <div class="hint" id="hint"><i></i><span>Kakadu follows your cursor · hold the mouse wheel (or drag) to spin him · click to annoy him</span></div>
+</header>
+
+<div class="marquee"><div class="track">
+  <span>Free delivery from ₪199</span><span>Vet-approved products</span><span>30-day easy returns</span><span>WhatsApp support 7 days a week</span><span>Eco packaging</span>
+  <span>Free delivery from ₪199</span><span>Vet-approved products</span><span>30-day easy returns</span><span>WhatsApp support 7 days a week</span><span>Eco packaging</span>
+</div></div>
+
+<section id="pets"><div class="wrap">
+  <div class="kicker reveal">Shop by pet</div>
+  <h2 class="reveal">Who are we shopping for today?</h2>
+  <div class="pets">
+    <a class="pet reveal" data-f="birds" href="#shop"><img src="img/l6.jpg" alt="Birds" loading="lazy"><div><div><h3>Birds</h3><small>320 products</small></div><b>→</b></div></a>
+    <a class="pet reveal" data-f="cats" href="#shop"><img src="img/l7.jpg" alt="Cats" loading="lazy"><div><div><h3>Cats</h3><small>410 products</small></div><b>→</b></div></a>
+    <a class="pet reveal" data-f="dogs" href="#shop"><img src="img/l8.jpg" alt="Dogs" loading="lazy"><div><div><h3>Dogs</h3><small>560 products</small></div><b>→</b></div></a>
+    <a class="pet reveal" data-f="fish" href="#shop"><img src="img/l9.jpg" alt="Fish" loading="lazy"><div><div><h3>Fish</h3><small>150 products</small></div><b>→</b></div></a>
+  </div>
+</div></section>
+
+<section id="shop" style="padding-top:10px"><div class="wrap">
+  <div class="kicker reveal">Bestsellers</div>
+  <h2 class="reveal">Kakadu-approved picks.</h2>
+  <div class="filters reveal" id="filters">
+    <button class="on" data-f="all">All</button><button data-f="birds">Birds</button><button data-f="cats">Cats</button><button data-f="dogs">Dogs</button><button data-f="fish">Fish</button><button data-f="care">Care</button>
+  </div>
+  <div class="products" id="products"></div>
+</div></section>
+
+<section style="padding-top:10px"><div class="wrap promo">
+  <div class="bigcard reveal">
+    <div class="ring" style="width:460px;height:460px;right:-130px;top:-150px"></div>
+    <div class="ring" style="width:280px;height:280px;right:-40px;top:-60px;animation-direction:reverse"></div>
+    <h3>First order?<br>Take 15% off everything.</h3>
+    <p>Join the flock and get a welcome discount on the whole store. Valid for 7 days after sign-up.</p>
+    <button class="code" id="code">FLOCK15 <span style="opacity:.6">· tap to copy</span></button>
+  </div>
+  <div class="feat">
+    <div class="f reveal"><i style="background:#fff1bf">01</i><div><h5>Vet-approved only</h5><p>Every product is checked by avian and small-animal vets before it reaches our shelves.</p></div></div>
+    <div class="f reveal"><i style="background:#dff3ff">02</i><div><h5>48-hour delivery</h5><p>From Haifa to Eilat. Free from ₪199, packed without plastic where we can.</p></div></div>
+    <div class="f reveal"><i style="background:#dcf5e7">03</i><div><h5>Real advice, real people</h5><p>Ask our team on WhatsApp — diets, toys, behaviour. No bots, no pressure.</p></div></div>
+  </div>
+</div></section>
+
+<section id="reviews" style="padding-top:10px"><div class="wrap">
+  <div class="kicker reveal">Reviews</div>
+  <h2 class="reveal">Loved by pets. Approved by their humans.</h2>
+  <div class="score reveal"><b>4.9</b><div><div class="stars" style="font-size:22px">★★★★★</div><span>based on 2,341 reviews</span></div></div>
+  <div class="reviews">
+    <div class="rev reveal"><div class="stars">★★★★★</div><p>“Our cockatoo Ziggy destroyed every toy in 10 minutes. The foraging puzzle kept him busy for a whole week. Delivery was next day.”</p><div class="who"><i style="background:#fff1bf">N</i><div><b>Noa L.</b><small>Ramat Gan · owner of Ziggy 🦜</small></div></div></div>
+    <div class="rev reveal"><div class="stars">★★★★★</div><p>“Finally a store that answers on WhatsApp like humans. They helped me switch my cat to a new diet without drama.”</p><div class="who"><i style="background:#dff3ff">D</i><div><b>Daniel K.</b><small>Haifa · owner of Mishka 🐈</small></div></div></div>
+    <div class="rev reveal"><div class="stars">★★★★★</div><p>“The felt cat cave is the only bed my cat actually uses. Beautiful packaging, zero plastic. Already ordered a second one.”</p><div class="who"><i style="background:#dcf5e7">M</i><div><b>Maya S.</b><small>Tel Aviv · owner of Pita 🐈</small></div></div></div>
+  </div>
+</div></section>
+
+<div class="brands"><div class="track">
+  <span>NUTRIWING</span><span>PAWSOME</span><span>AQUALEAF</span><span>FEATHER&amp;CO</span><span>WILD RUN</span><span>PURR LAB</span><span>SEEDCRAFT</span>
+  <span>NUTRIWING</span><span>PAWSOME</span><span>AQUALEAF</span><span>FEATHER&amp;CO</span><span>WILD RUN</span><span>PURR LAB</span><span>SEEDCRAFT</span>
+</div></div>
+
+<section id="faq"><div class="wrap faq">
+  <div><div class="kicker reveal">FAQ</div><h2 class="reveal">Questions? Kakadu has answers.</h2><p class="reveal" style="color:var(--muted);line-height:1.6;max-width:380px">Didn’t find yours? Message us on WhatsApp — a real person replies within 15 minutes.</p></div>
+  <div>
+    <details class="reveal" open><summary>How fast is delivery?</summary><p>Orders placed before 14:00 ship the same day. Delivery takes 24–48 hours anywhere in Israel, and it’s free from ₪199.</p></details>
+    <details class="reveal"><summary>Can I return a product?</summary><p>Yes — unopened items can be returned within 30 days. Toys your pet didn’t like? Write to us, we’ll find a solution.</p></details>
+    <details class="reveal"><summary>Do you help choose food for birds?</summary><p>Absolutely. Our team works with avian vets and will build a diet plan for your parrot for free.</p></details>
+    <details class="reveal"><summary>Is there a physical store?</summary><p>Our showroom is in Tel Aviv — come meet Kakadu (the real one) on Fridays 10:00–14:00.</p></details>
+  </div>
+</div></section>
+
+<section id="club" style="padding-top:0"><div class="wrap">
+  <div class="news reveal">
+    <div><div class="kicker">Kakadu Club</div><h2 style="margin-bottom:0">Tips, deals and cute birds. Weekly.</h2></div>
+    <form onsubmit="event.preventDefault();this.querySelector('input').value='';this.querySelector('button').textContent='You’re in! 🎉'">
+      <input type="email" required placeholder="your@email.com" aria-label="Email">
+      <button class="btn primary" style="padding:14px 22px">Join</button>
+    </form>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="fgrid">
+    <div><a class="logo" href="#"><i></i>KAKADU</a><p style="line-height:1.6;max-width:300px">Premium pet store for birds, cats, dogs and fish. Delivery across Israel.</p></div>
+    <div><h6>Shop</h6><ul><li>Birds</li><li>Cats</li><li>Dogs</li><li>Fish</li><li>Care</li></ul></div>
+    <div><h6>Help</h6><ul><li>Delivery</li><li>Returns</li><li>WhatsApp support</li><li>FAQ</li></ul></div>
+    <div><h6>Visit</h6><ul><li>Showroom, Tel Aviv</li><li>Fri 10:00–14:00</li><li>hello@kakadu.shop</li></ul></div>
+  </div>
+  <div class="fbot"><span>© 2026 KAKADU · concept website</span><span>Design, 3D &amp; AI visuals by <a href="https://www.instagram.com/max_prom_ai/" target="_blank" rel="noopener">Max Prom AI Studio</a></span></div>
+</div></footer>
+
+<script>
+  const P=[
+    {n:'Tropical Seed Mix',s:'Parrots · 2 kg',p:89,o:109,c:'birds',b:'Hit',r:4.9},
+    {n:'Rope Swing Deluxe',s:'Birds · cotton',p:59,c:'birds',b:'New',r:4.8},
+    {n:'Foraging Puzzle',s:'Smart toy · level 2',p:74,c:'birds',r:4.9},
+    {n:'Cozy Cat Cave',s:'Cats · felt wool',p:189,o:239,c:'cats',b:'-20%',r:5.0},
+    {n:'Vita Feather Drops',s:'Care · 30 ml',p:49,c:'care',r:4.7},
+    {n:'Natural Perch Set',s:'Birds · 3 pcs',p:69,c:'birds',b:'Eco',r:4.8},
+    {n:'Wild Run Kibble',s:'Dogs · grain-free · 3 kg',p:129,c:'dogs',b:'Hit',r:4.8},
+    {n:'Bone & Rope Duo',s:'Dogs · chew toys',p:45,c:'dogs',r:4.6},
+    {n:'Nordic Bird Loft',s:'Cage · white & oak',p:549,o:649,c:'birds',b:'-15%',r:4.9},
+    {n:'Glow Nano Aquarium',s:'Fish · 20 L set',p:329,c:'fish',b:'New',r:4.7},
+    {n:'Sisal Cat Tower',s:'Cats · 90 cm',p:219,c:'cats',r:4.8},
+    {n:'Pure Flow Fountain',s:'Care · ceramic',p:159,c:'care',r:4.9}
+  ];
+  const wrap=document.getElementById('products');
+  wrap.innerHTML=P.map((x,i)=>`<div class="prod reveal" data-c="${x.c}"><div class="pimg">${x.b?`<span class="badge">${x.b}</span>`:''}<button class="fav" aria-label="Save">♡</button><img src="img/p${i}.jpg" alt="${x.n}" loading="lazy"></div>
+    <div class="prow"><div><h4>${x.n}</h4><small>${x.s}</small><div class="stars">★ ${x.r.toFixed(1)}</div></div><div class="price">₪${x.p}${x.o?`<s>₪${x.o}</s>`:''}</div></div>
+    <button class="add">Add to cart</button></div>`).join('');
+  let n=0; const cn=document.getElementById('cartN');
+  wrap.addEventListener('click',e=>{
+    const f=e.target.closest('.fav'); if(f){f.textContent=f.textContent==='♡'?'❤️':'♡';return;}
+    const b=e.target.closest('.add'); if(!b) return;
+    n++; cn.textContent=n; cn.classList.add('bump'); setTimeout(()=>cn.classList.remove('bump'),250);
+    b.textContent='Added ✓'; setTimeout(()=>b.textContent='Add to cart',1200); window.kakaduHappy&&window.kakaduHappy();
+  });
+  const fl=document.getElementById('filters');
+  function setFilter(f){ fl.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.f===f));
+    wrap.querySelectorAll('.prod').forEach(p=>{p.classList.toggle('hide',f!=='all'&&p.dataset.c!==f); p.classList.add('in');}); }
+  fl.addEventListener('click',e=>{const b=e.target.closest('button'); if(b) setFilter(b.dataset.f);});
+  document.querySelectorAll('.pet').forEach(p=>p.addEventListener('click',()=>setFilter(p.dataset.f)));
+  document.getElementById('code').addEventListener('click',e=>{navigator.clipboard&&navigator.clipboard.writeText('FLOCK15').catch(()=>{}); e.currentTarget.innerHTML='Copied! ✓';});
+  // reveal on scroll, with a safety net so nothing in view stays hidden
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08,rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(i%4)*70+'ms';io.observe(el)});
+  function sweep(){document.querySelectorAll('.reveal:not(.in)').forEach(el=>{const r=el.getBoundingClientRect(); if(r.top<innerHeight&&r.bottom>0) el.classList.add('in');});}
+  addEventListener('scroll',sweep,{passive:true}); setTimeout(sweep,1200);
+</script>
+
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
+
+const stage=document.getElementById('stage');
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.05;
+stage.appendChild(renderer.domElement);
+
+const scene=new THREE.Scene();
+scene.environment=new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(),0.04).texture;
+const camera=new THREE.PerspectiveCamera(32,1,0.1,100);
+camera.position.set(0,0.15,6);
+const key=new THREE.DirectionalLight(0xfff3dc,2.2); key.position.set(3,4,5); scene.add(key);
+const rim=new THREE.DirectionalLight(0xbfe3ff,1.6); rim.position.set(-4,2,-3); scene.add(rim);
+scene.add(new THREE.HemisphereLight(0xffffff,0xf1e4cf,0.7));
+
+// soft contact shadow
+const sc=document.createElement('canvas'); sc.width=sc.height=128;
+const sg=sc.getContext('2d'); const gr=sg.createRadialGradient(64,64,0,64,64,64);
+gr.addColorStop(0,'rgba(60,40,10,.55)'); gr.addColorStop(.55,'rgba(60,40,10,.18)'); gr.addColorStop(1,'rgba(60,40,10,0)');
+sg.fillStyle=gr; sg.fillRect(0,0,128,128);
+const shadow=new THREE.Mesh(new THREE.PlaneGeometry(2.2,0.9),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(sc),transparent:true,opacity:.5,depthWrite:false}));
+shadow.rotation.x=-Math.PI/2; scene.add(shadow);
+let footY=-1.2;
+
+const rig=new THREE.Group(); scene.add(rig);   // follows cursor / spins
+const bob=new THREE.Group(); rig.add(bob);     // idle, hop, shake
+
+let mobile=false;
+function layout(){
+  const w=stage.clientWidth,h=stage.clientHeight;
+  renderer.setSize(w,h); camera.aspect=w/h; camera.updateProjectionMatrix();
+  mobile=w<900;
+  const halfW=Math.tan(THREE.MathUtils.degToRad(camera.fov/2))*camera.position.z*camera.aspect;
+  rig.position.set(mobile?0:halfW*0.42, mobile?0.05:-0.05, 0);
+  rig.scale.setScalar(mobile?0.95:1);
+  document.querySelector('#hint span').textContent = mobile
+    ? 'Swipe sideways on Kakadu to spin him · tap to annoy him'
+    : 'Kakadu follows your cursor · hold the mouse wheel (or drag) to spin him · click to annoy him';
+  shadow.position.set(rig.position.x, rig.position.y+(footY-0.25)*rig.scale.x, 0);
+  shadow.scale.setScalar(rig.scale.x);
+}
+addEventListener('resize',layout); layout();
+
+const loader=new GLTFLoader();
+function prep(g,height){
+  const m=g.scene;
+  const box=new THREE.Box3().setFromObject(m); const size=box.getSize(new THREE.Vector3()); const c=box.getCenter(new THREE.Vector3());
+  const s=height/size.y; m.scale.setScalar(s); m.position.sub(c.multiplyScalar(s));
+  return m;
+}
+let calm=null, angry=null;
+loader.load('kakadu.glb',g=>{
+  calm=prep(g,2.4); bob.add(calm);
+  footY=new THREE.Box3().setFromObject(calm).min.y; layout();
+  document.getElementById('loader').remove();
+  setTimeout(()=>say('Hello! 👋'),600);
+  // a second scan of the same bird in an angry pose: wings out, beak open
+  loader.load('kakadu_angry.glb',a=>{
+    angry=prep(a,2.55);
+    angry.position.y+=footY-new THREE.Box3().setFromObject(angry).min.y;
+    angry.visible=false; bob.add(angry);
+  },undefined,()=>{});
+},undefined,()=>{document.getElementById('loader').textContent='3D model not found';});
+
+// ---------- input ----------
+const target={x:0,y:0}, cur={x:0,y:0};
+const ray=new THREE.Raycaster(), ndc=new THREE.Vector2();
+function hitBird(e){
+  if(!calm) return false;
+  const r=renderer.domElement.getBoundingClientRect();
+  ndc.set(((e.clientX-r.left)/r.width)*2-1, -((e.clientY-r.top)/r.height)*2+1);
+  ray.setFromCamera(ndc,camera);
+  return ray.intersectObject(bob,true).length>0;
+}
+let spin=0, spinVel=0, drag=null, moved=0, dragBtn=0, touchY=0, touchLocked=false;
+addEventListener('pointermove',e=>{
+  if(e.pointerType==='mouse'){ target.x=(e.clientX/innerWidth)*2-1; target.y=(e.clientY/innerHeight)*2-1; }
+  if(drag!==null){
+    if(e.pointerType==='touch' && !touchLocked){
+      // decide once: a sideways swipe spins the bird, a vertical swipe scrolls the page
+      if(Math.abs(e.clientY-touchY)>Math.abs(e.clientX-drag)+4){ drag=null; return; }
+      if(Math.abs(e.clientX-drag)>6) touchLocked=true; else return;
+    }
+    const dx=e.clientX-drag; drag=e.clientX; moved+=Math.abs(dx); spinVel=dx*0.012; spin+=dx*0.012;
+  }
+  if(e.pointerType==='mouse') renderer.domElement.style.cursor = drag!==null ? 'grabbing' : (hitBird(e) ? 'pointer' : 'default');
+});
+renderer.domElement.addEventListener('pointerdown',e=>{
+  // pressed mouse wheel spins from anywhere on the stage; left button / touch must start on the bird
+  if(e.button===1){ e.preventDefault(); drag=e.clientX; dragBtn=1; moved=99; return; }
+  if(e.button===0 && hitBird(e)){ drag=e.clientX; touchY=e.clientY; dragBtn=0; moved=0; touchLocked=false; }
+});
+renderer.domElement.addEventListener('mousedown',e=>{ if(e.button===1) e.preventDefault(); }); // no browser auto-scroll
+addEventListener('pointerup',()=>{ if(drag!==null && dragBtn===0 && moved<6) annoy(); drag=null; });
+addEventListener('pointercancel',()=>{ drag=null; });
+addEventListener('deviceorientation',e=>{if(e.gamma==null)return; target.x=THREE.MathUtils.clamp(e.gamma/30,-1,1); target.y=THREE.MathUtils.clamp((e.beta-45)/30,-1,1);});
+
+// ---------- voice: a synthesized cockatoo screech ----------
+let actx=null;
+function squawk(level){
+  actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+  const now=actx.currentTime, out=actx.createGain(); out.gain.value=0.22; out.connect(actx.destination);
+  const bp=actx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=2400; bp.Q.value=1.4; bp.connect(out);
+  const cnt=Math.min(1+level,3);
+  for(let k=0;k<cnt;k++){
+    const t0=now+k*0.19, dur=0.16+Math.random()*0.06;
+    const car=actx.createOscillator(), mod=actx.createOscillator(), mg=actx.createGain(), g=actx.createGain();
+    car.type='sawtooth'; mod.type='square';
+    const f=1500+Math.random()*500+level*120;
+    car.frequency.setValueAtTime(f,t0); car.frequency.linearRampToValueAtTime(f*1.55,t0+dur*0.35); car.frequency.exponentialRampToValueAtTime(f*0.8,t0+dur);
+    mod.frequency.value=f*0.51; mg.gain.value=f*0.9; mod.connect(mg); mg.connect(car.frequency);
+    g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(1,t0+0.015); g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+    car.connect(g); g.connect(bp); car.start(t0); mod.start(t0); car.stop(t0+dur+0.02); mod.stop(t0+dur+0.02);
+    const buf=actx.createBuffer(1,Math.floor(actx.sampleRate*dur),actx.sampleRate), d=buf.getChannelData(0);
+    for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*(1-i/d.length);
+    const ns=actx.createBufferSource(), ng=actx.createGain(); ns.buffer=buf; ng.gain.value=0.35; ns.connect(ng); ng.connect(bp); ns.start(t0);
+  }
+}
+
+// ---------- speech bubble ----------
+const bubble=document.getElementById('bubble'); let bt;
+function say(t,ms=1800,mad=false){bubble.textContent=t;bubble.classList.toggle('mad',mad);bubble.classList.add('show');clearTimeout(bt);bt=setTimeout(()=>bubble.classList.remove('show'),ms);}
+const happy=['Yum! 🥜','Great choice!','Add more treats!','I love this one ❤️','Tasty! 😋'];
+const mad=['Hey! 😠','Don’t poke me!','SQUAAAWK!! 😡','That’s it, I’m calling my lawyer 🦜⚖️','Buy me a treat and we’re cool.'];
+let hop=0, rage=0, angryUntil=0, pokes=0, lastPoke=0;
+window.kakaduHappy=()=>{hop=1; say(happy[Math.floor(Math.random()*happy.length)]);};
+function annoy(){
+  const t=performance.now();
+  pokes=(t-lastPoke<2500)?pokes+1:0; lastPoke=t;
+  rage=1; angryUntil=t+1100+Math.min(pokes,3)*250;
+  squawk(Math.min(pokes,2));
+  say(mad[Math.min(pokes,mad.length-1)],1600,true);
+  if(navigator.vibrate) navigator.vibrate(60);
+}
+
+// ---------- loop ----------
+const baseYaw=-0.35;
+const clock=new THREE.Clock();
+renderer.setAnimationLoop(()=>{
+  const t=clock.getElapsedTime(), now=performance.now();
+  const halfW=Math.tan(THREE.MathUtils.degToRad(camera.fov/2))*camera.position.z*camera.aspect;
+  cur.x+=((target.x-rig.position.x/halfW)-cur.x)*0.08; cur.y+=(target.y-cur.y)*0.08;
+  if(drag===null){ spin+=spinVel; spinVel*=0.93; }
+  if(drag===null && Math.abs(spinVel)<0.002){ spin=Math.atan2(Math.sin(spin),Math.cos(spin))*0.96; }
+  rig.rotation.y=baseYaw+spin+THREE.MathUtils.clamp(cur.x,-1.2,1.2)*0.75;
+  rig.rotation.x=THREE.MathUtils.clamp(cur.y,-1,1)*0.18;
+  rig.rotation.z=-THREE.MathUtils.clamp(cur.x,-1,1)*0.05;
+  const mad=now<angryUntil;
+  if(calm) calm.visible=!(mad&&angry);
+  if(angry) angry.visible=mad;
+  rage=Math.max(0,rage-0.02);
+  const shake=mad?Math.sin(t*60)*0.035*(0.4+rage):0;
+  bob.rotation.z=shake; bob.position.x=shake*0.6;
+  hop=Math.max(0,hop-0.028);
+  const h=Math.sin(hop*Math.PI)*0.35+(mad?Math.sin(Math.min(1,rage*1.6)*Math.PI)*0.08:0);
+  const puff=mad?1.06:1;
+  bob.position.y=Math.sin(t*1.6)*0.03+h;
+  bob.scale.set(puff*(1+Math.sin(t*1.6)*0.006),puff*(1-Math.sin(t*1.6)*0.006+h*0.05),puff);
+  shadow.material.opacity=.5-h*.6;
+  renderer.render(scene,camera);
+});
+</script>
+</body>
+</html>
