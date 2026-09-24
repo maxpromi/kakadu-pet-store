@@ -539,8 +539,13 @@ const head={yaw:0,pitch:0,roll:0}, tgt={yaw:0,pitch:0};
 const mY=new THREE.Matrix4(), mX=new THREE.Matrix4(), mZ=new THREE.Matrix4(), m4=new THREE.Matrix4(), hp=new THREE.Vector3();
 const clock=new THREE.Clock();
 // debug hooks for tuning (?debug in the URL): force head yaw / body spin
-const DBG=new URLSearchParams(location.search).has('debug')?{yaw:null,spin:null}:null;
+const Q=new URLSearchParams(location.search);
+const DBG=Q.has('debug')?{yaw:null,spin:null}:null;
 if(DBG) window.__kk=DBG;
+// ?shot=hero|angry — fixed poses for portfolio screenshots
+const SHOT=Q.get('shot');
+if(SHOT){ mouse.has=true; mouse.x=innerWidth*0.28; mouse.y=innerHeight*0.32; document.querySelector('.hint').style.display='none'; }
+if(SHOT==='angry'){ const keep=()=>{angryUntil=performance.now()+1e9; rage=0.6; say(mad[2],1e9,true);}; setTimeout(keep,2500); }
 renderer.setAnimationLoop(()=>{
   if(DBG){ if(DBG.spin!=null){spin=DBG.spin;spinVel=0;} }
   const t=clock.getElapsedTime(), now=performance.now();
