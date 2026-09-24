@@ -96,8 +96,11 @@
   h2{font-family:Unbounded;font-weight:700;font-size:clamp(28px,3.6vw,48px);letter-spacing:-.02em;margin:12px 0 34px;max-width:760px;line-height:1.05}
 
   /* PRODUCTS */
-  .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
-  .filters button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:10px 18px;font:800 14px Manrope;cursor:pointer;transition:.2s}
+  /* category chips live in the top bar, between the logo and the cart */
+  .filters{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .filters::-webkit-scrollbar{display:none}
+  .filters button{flex:none;border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 15px;font:800 14px Manrope;cursor:pointer;transition:.2s;color:var(--ink)}
+  .filters button:hover{border-color:var(--ink)}
   .filters button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
   .products{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
   .prod{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;display:flex;flex-direction:column;gap:12px;transition:box-shadow .3s,transform .3s}
@@ -183,8 +186,14 @@
   .reveal{opacity:0;transform:translateY(30px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.8,.2,1)}
   .reveal.in{opacity:1;transform:none}
 
-  @media (max-width:1000px){ .products{grid-template-columns:repeat(3,1fr)} .links{display:none} }
+  @media (max-width:1000px){ .products{grid-template-columns:repeat(3,1fr)} .filters button{padding:7px 12px;font-size:13px} }
   @media (max-width:760px){
+    /* chips move to a second row of the bar and scroll sideways */
+    .nav{flex-wrap:wrap;border-radius:26px;row-gap:8px;padding:10px 12px 10px 18px}
+    .filters{order:3;width:100%;margin:0 -2px}
+    .hero{padding-top:150px}
+    .cartpanel{top:132px}
+    section{scroll-margin-top:136px}
     .hero-inner{grid-template-columns:1.15fr .85fr;gap:8px}
     .stats{gap:18px}
     .stats div b{font-size:19px}
@@ -199,7 +208,7 @@
   }
   @media (max-width:560px){
     .hero-inner{grid-template-columns:1fr}
-    .hero{padding-top:84px}
+    .hero{padding-top:128px}
     .slot{min-height:250px;order:-1;margin-top:-6px}
     .hint{font-size:11px;padding:5px 10px}
     h1{margin:12px 0 10px}
@@ -220,7 +229,9 @@
 
 <nav><div class="wrap nav">
   <a class="logo" href="#"><i></i>KAKADU</a>
-  <div class="links"><a href="#shop">Shop</a><a href="#pets">Pets</a><a href="#reviews">Reviews</a><a href="#faq">FAQ</a></div>
+  <div class="filters" id="filters" role="tablist" aria-label="Shop by category">
+    <button class="on" data-f="all">All</button><button data-f="birds">Birds</button><button data-f="cats">Cats</button><button data-f="dogs">Dogs</button><button data-f="fish">Fish</button><button data-f="care">Care</button>
+  </div>
   <button class="cart" id="cartBtn">Cart <b id="cartN">0</b></button>
 </div></nav>
 
@@ -256,10 +267,7 @@
 
 <section id="shop" style="padding-top:56px"><div class="wrap">
   <div class="kicker">Bestsellers</div>
-  <h2>Kakadu-approved picks.</h2>
-  <div class="filters" id="filters">
-    <button class="on" data-f="all">All</button><button data-f="birds">Birds</button><button data-f="cats">Cats</button><button data-f="dogs">Dogs</button><button data-f="fish">Fish</button><button data-f="care">Care</button>
-  </div>
+  <h2 id="shopTitle">Kakadu-approved picks.</h2>
   <div class="products" id="products"></div>
 </div></section>
 
@@ -393,7 +401,13 @@
   const fl=document.getElementById('filters');
   function setFilter(f){ fl.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.f===f));
     wrap.querySelectorAll('.prod').forEach(p=>p.classList.toggle('hide',f!=='all'&&p.dataset.c!==f)); }
-  fl.addEventListener('click',e=>{const b=e.target.closest('button'); if(b) setFilter(b.dataset.f);});
+  const titles={all:'Kakadu-approved picks.',birds:'Everything for birds.',cats:'Everything for cats.',dogs:'Everything for dogs.',fish:'Everything for fish.',care:'Care &amp; health.'};
+  fl.addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    setFilter(b.dataset.f);
+    document.getElementById('shopTitle').innerHTML=titles[b.dataset.f];
+    document.getElementById('shop').scrollIntoView({behavior:'smooth'});
+  });
   document.querySelectorAll('.pet, footer a[data-f]').forEach(p=>p.addEventListener('click',()=>setFilter(p.dataset.f)));
   document.getElementById('code').addEventListener('click',e=>{navigator.clipboard&&navigator.clipboard.writeText('FLOCK15').catch(()=>{}); e.currentTarget.innerHTML='Copied! ✓';});
   const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08,rootMargin:'0px 0px -40px 0px'});
@@ -467,6 +481,39 @@ function addNeck(material){
   material.needsUpdate=true;
 }
 
+// ---------- the angry bird's "skeleton" (kakadu_angry.glb, same raw frame: Y up, beak +Z) ----------
+// wings = everything outside |x|>0.3 (they are spread wide); head+crest+beak = the narrow column |x|<0.3
+// above a tilted neck plane. Wings rotate around the shoulders, the head around the base of the neck.
+// The body and the perch are never touched, so he stays exactly on his perch.
+const aRig={ wingL:new THREE.Matrix3(), wingR:new THREE.Matrix3(), head:new THREE.Matrix3(), headT:new THREE.Vector3(),
+  pivL:new THREE.Vector3(-0.27,0.22,-0.05), pivR:new THREE.Vector3(0.27,0.22,-0.05), pivH:new THREE.Vector3(0,0.08,0.12) };
+function addAngryRig(material){
+  material.onBeforeCompile=sh=>{
+    Object.assign(sh.uniforms,{uWL:{value:aRig.wingL},uWR:{value:aRig.wingR},uHA:{value:aRig.head},uHT:{value:aRig.headT},
+      uPL:{value:aRig.pivL},uPR:{value:aRig.pivR},uPH:{value:aRig.pivH}});
+    sh.vertexShader='uniform mat3 uWL; uniform mat3 uWR; uniform mat3 uHA; uniform vec3 uHT; uniform vec3 uPL; uniform vec3 uPR; uniform vec3 uPH;\n'+sh.vertexShader
+      .replace('#include <beginnormal_vertex>',`
+        float ax = abs(position.x);
+        // wings only: the perch (y≈-0.71..-0.52, ±0.87 long) and the tail sit lower and must never move
+        float wingW = smoothstep(0.24, 0.42, ax) * smoothstep(-0.47, -0.38, position.y);
+        float headW = smoothstep(0.0, 0.12, position.y + 0.35*(position.z-0.3)) * (1.0 - smoothstep(0.24, 0.34, ax));
+        float side = step(0.0, position.x);
+        mat3 W = uWL*(1.0-side) + uWR*side;
+        vec3 wp = mix(uPL, uPR, side);
+        vec3 objectNormal = vec3(normal);
+        objectNormal = mix(objectNormal, W*objectNormal, wingW);
+        objectNormal = normalize(mix(objectNormal, uHA*objectNormal, headW));
+        #ifdef USE_TANGENT
+          vec3 objectTangent = vec3(tangent.xyz);
+        #endif`)
+      .replace('#include <begin_vertex>',`
+        vec3 transformed = vec3(position);
+        transformed = mix(transformed, W*(transformed-wp)+wp, wingW);
+        transformed = mix(transformed, uHA*(transformed-uPH)+uPH+uHT, headW);`);
+  };
+  material.needsUpdate=true;
+}
+
 function prep(g,height){
   const m=g.scene;
   const box=new THREE.Box3().setFromObject(m); const size=box.getSize(new THREE.Vector3()); const c=box.getCenter(new THREE.Vector3());
@@ -485,6 +532,7 @@ loader.load('kakadu.glb',g=>{
   loader.load('kakadu_angry.glb',a=>{
     // both scans share the same raw frame (perch at y≈-0.66, ±0.87 long), so identical transforms put him on the same perch
     angry=a.scene; angry.scale.copy(calm.scale); angry.position.copy(calm.position);
+    angry.traverse(o=>{ if(o.isMesh) addAngryRig(o.material); });
     angry.visible=false; bob.add(angry);
   },undefined,()=>{});
 },undefined,()=>{document.getElementById('loader').textContent='3D model not found';});
@@ -544,6 +592,11 @@ renderer.domElement.addEventListener('mousedown',e=>{ if(e.button===1) e.prevent
 renderer.domElement.addEventListener('auxclick',e=>{ if(e.button===1) e.preventDefault(); });
 addEventListener('pointerup',()=>{ if(drag!==null && dragKind!=='wheel' && moved<8) annoy(); drag=null; dragKind=''; });
 addEventListener('pointercancel',()=>{ drag=null; dragKind=''; });
+// phones: follow the finger — on tap, while dragging and while scrolling the page (touch events keep firing)
+let lastTouch=0;
+function onTouch(e){ const tt=e.touches[0]; if(!tt) return; mouse.x=tt.clientX; mouse.y=tt.clientY; mouse.has=true; lastTouch=performance.now(); }
+addEventListener('touchstart',onTouch,{passive:true});
+addEventListener('touchmove',onTouch,{passive:true});
 let tilt=null;
 addEventListener('deviceorientation',e=>{ if(e.gamma!=null) tilt={x:THREE.MathUtils.clamp(e.gamma/35,-1,1), y:THREE.MathUtils.clamp((e.beta-45)/35,-1,1)}; });
 
@@ -574,12 +627,13 @@ const bubble=document.getElementById('bubble'); let bt;
 function say(t,ms=1800,mad=false){bubble.textContent=t;bubble.classList.toggle('mad',mad);bubble.classList.add('show');clearTimeout(bt);bt=setTimeout(()=>bubble.classList.remove('show'),ms);}
 const happy=['Yum! 🥜','Great choice!','Add more treats!','I love this one ❤️','Tasty! 😋'];
 const mad=['Hey! 😠','Don’t poke me!','SQUAAAWK!! 😡','That’s it, I’m calling my lawyer 🦜⚖️','Buy me a treat and we’re cool.'];
-let hop=0, rage=0, angryUntil=0, pokes=0, lastPoke=0;
+let hop=0, rage=0, angryUntil=0, angryStart=0, pokes=0, lastPoke=0;
 window.kakaduHappy=()=>{hop=1; say(happy[Math.floor(Math.random()*happy.length)]);};
 function annoy(){
   const t=performance.now();
   pokes=(t-lastPoke<2500)?pokes+1:0; lastPoke=t;
-  rage=1; angryUntil=t+1100+Math.min(pokes,3)*250;
+  if(t>angryUntil) angryStart=t;                 // a fresh tantrum restarts the flapping; repeated pokes extend it
+  rage=1; angryUntil=t+1300+Math.min(pokes,3)*350;
   squawk(Math.min(pokes,2));
   say(mad[Math.min(pokes,mad.length-1)],1600,true);
   if(navigator.vibrate) navigator.vibrate(60);
@@ -593,13 +647,13 @@ const clock=new THREE.Clock();
 // debug hooks for tuning (?debug in the URL): force head yaw / body spin
 const Q=new URLSearchParams(location.search);
 const DBG=Q.has('debug')?{yaw:null,spin:null}:null;
-if(DBG){ window.__kk=DBG; DBG.rig=rig; DBG.cam=camera; DBG.getAngry=()=>angry; DBG.getCalm=()=>calm; DBG.THREE=THREE; }
+if(DBG){ window.__kk=DBG; DBG.rig=rig; DBG.cam=camera; DBG.getAngry=()=>angry; DBG.getCalm=()=>calm; DBG.THREE=THREE; DBG.renderer=renderer; DBG.head=head; DBG.tgt=tgt; DBG.mouse=mouse; }
 // ?shot=hero|angry — fixed poses for portfolio screenshots
 const SHOT=Q.get('shot');
 if(SHOT){ mouse.has=true; mouse.x=innerWidth*0.28; mouse.y=innerHeight*0.32; document.querySelector('.hint').style.display='none'; }
 if(SHOT==='angry'){ const keep=()=>{angryUntil=performance.now()+1e9; rage=0.6; say(mad[2],1e9,true);}; setTimeout(keep,2500); }
 renderer.setAnimationLoop(()=>{
-  if(DBG){ if(DBG.spin!=null){spin=DBG.spin;spinVel=0;} }
+  if(DBG){ if(DBG.spin!=null){spin=DBG.spin;spinVel=0;} if(DBG.angryA!=null) angryUntil=performance.now()+1e6; }
   const t=clock.getElapsedTime(), now=performance.now();
 
   // body: only the pressed wheel (or a sideways swipe) turns it; it drifts back to face the visitor
@@ -634,6 +688,25 @@ renderer.setAnimationLoop(()=>{
   const mad=now<angryUntil;
   if(calm) calm.visible=!(mad&&angry);
   if(angry) angry.visible=mad;
+  if(mad && angry){
+    let a=(now-angryStart)/1000, left=(angryUntil-now)/1000;
+    if(DBG && DBG.angryA!=null){ a=DBG.angryA; left=9; }            // debug: freeze the tantrum at time a
+    const calmDown=Math.min(1,left/0.35);                          // everything settles in the last 0.35 s
+    // wings: fast angry flaps that start big and get smaller
+    const flap=Math.sin(a*21)*(0.34*Math.exp(-a*0.9)+0.1)*calmDown*(0.7+0.3*rage);
+    mZ.makeRotationZ(flap); mY.makeRotationY(-flap*0.35); m4.multiplyMatrices(mY,mZ); aRig.wingR.setFromMatrix4(m4);
+    mZ.makeRotationZ(-flap); mY.makeRotationY(flap*0.35); m4.multiplyMatrices(mY,mZ); aRig.wingL.setFromMatrix4(m4);
+    // head: rears back first, then snaps/pecks towards the pointer, shaking and scolding
+    const rear=Math.max(0,1-a/0.18);                               // first 0.18 s: pull the head back
+    const ph=(a%0.38)/0.38, peck=a>0.18&&ph<0.3?Math.sin(ph/0.3*Math.PI):0;
+    const shakeH=Math.sin(a*33)*0.2*Math.exp(-a*1.6);
+    const lookYaw=THREE.MathUtils.clamp(head.yaw,-0.6,0.6);
+    mY.makeRotationY((lookYaw+shakeH)*calmDown);
+    mX.makeRotationX((-0.35*rear + peck*0.38 + Math.sin(a*9)*0.05)*calmDown);
+    mZ.makeRotationZ(Math.sin(a*13)*0.12*calmDown);
+    m4.multiplyMatrices(mY,mX).multiply(mZ); aRig.head.setFromMatrix4(m4);
+    aRig.headT.set(0, -peck*0.03*calmDown, (peck*0.1 - rear*0.05)*calmDown);
+  }
   rage=Math.max(0,rage-0.02);
   // the bird + perch never move or resize: all emotion lives in the head (see the neck above)
   bob.rotation.set(0,0,0); bob.position.set(0,0,0); bob.scale.set(1,1,1);
